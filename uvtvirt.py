@@ -133,8 +133,8 @@ class UVTKVMTest(object):
         logging.debug("Creating VM")
         cmd = ('uvt-kvm create {}'.format(self.name))
 
-        if self.image.find(".img"):
-           cmd = cmd + " --backing-image-file {} ".format(self.image)
+        if self.image.find(".img") > 0:
+            cmd = cmd + " --backing-image-file {} ".format(self.image)
 
         if not self.run_command(cmd):
             return False
@@ -148,12 +148,13 @@ class UVTKVMTest(object):
         if not self.run_command(cmd):
             return False
 
-        logging.debug("Verify VM was created")
+        logging.debug("Verify VM was created with ssh")
         if not self.run_command('uvt-kvm ssh {}'.format(self.name)):
             return False
-        cmd = ("uvt-simplestreams-libvirt purge")
 
-        if not self.run_command(cmd):
+        logging.debug("Verify VM was created with ssh and run a command")
+        if not self.run_command('uvt-kvm ssh {} \"lsb_release -a \"'
+                                .format(self.name)):
             return False
 
         self.cleanup()
