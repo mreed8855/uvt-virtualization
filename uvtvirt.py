@@ -59,7 +59,6 @@ class UVTKVMTest(object):
     def __init__(self, image=None):
         self.image = image
         self.release = lsb_release.get_distro_information()["CODENAME"]
-        self.os_version = lsb_release.get_distro_information()["RELEASE"]
         self.arch = check_output(['dpkg', '--print-architecture'],
                                  universal_newlines=True).strip()
         self.name = 'testuvt'
@@ -133,8 +132,9 @@ class UVTKVMTest(object):
         # Create vm
         logging.debug("Creating VM")
         cmd = ('uvt-kvm create {}'.format(self.name))
-        if self.image:
-            cmd = cmd + " --backing-image-file {} ".format(self.image)
+
+        if self.image.find(".img"):
+           cmd = cmd + " --backing-image-file {} ".format(self.image)
 
         if not self.run_command(cmd):
             return False
