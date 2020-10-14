@@ -10,4 +10,5 @@ Specify a location for uvt-simplestreams-libvirt to retrive an image
 uvtvirt.py -i http://cloud-images.ubuntu.com/daily/server/daily/
 
 Specify a cloud image for uvt-kvm create to create a vm
+
 uvtvirt.py -i file:///home/ubuntu/focal-server-cloudimg-amd64.img
