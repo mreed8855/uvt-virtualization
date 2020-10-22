@@ -72,7 +72,7 @@ class UVTKVMTest(object):
         self.release = lsb_release.get_distro_information()["CODENAME"]
         self.arch = check_output(['dpkg', '--print-architecture'],
                                  universal_newlines=True).strip()
-        self.name = 'testuvt'
+        self.name = tempfile.mktemp()[5:]
 
     def run_command(self, cmd):
         task = RunCommand(cmd)
@@ -140,6 +140,15 @@ class UVTKVMTest(object):
         return True
 
     def start(self):
+        # Generate ssh key if needed
+        home_dir = os.environ['HOME']
+        ssh_key_file = "{}/.ssh/id_rsa".format(home_dir)
+        print("key file - {}".format(ssh_key_file))
+        if not os.path.exists(ssh_key_file):
+            self.run_command("mkdir -p {}/.ssh".format(home_dir))
+            cmd = ('ssh-keygen -f {} -t rsa -N \'\''.format(ssh_key_file))
+            self.run_command(cmd)
+
         # Create vm
         logging.debug("Creating VM")
         cmd = ('uvt-kvm create {}'.format(self.name))
