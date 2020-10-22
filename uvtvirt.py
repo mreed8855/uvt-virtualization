@@ -107,12 +107,12 @@ class UVTKVMTest(object):
             cmd = ("uvt-simplestreams-libvirt sync release={} "
                    "arch={}".format(self.release, self.arch))
 
-            if url.scheme == 'http' or url.scheme == 'ftp':
+            if url.scheme == 'http':
                 # Path specified to use -source option
                 logging.debug("Using --source option for uvt-simpletreams")
                 cmd = cmd + " --source {} ".format(self.image)
 
-            logging.debug("uvt-simplestreams-libvirt query")
+            logging.debug("uvt-simplestreams-libvirt sync")
             if not self.run_command(cmd):
                 return False
         return True
@@ -143,11 +143,13 @@ class UVTKVMTest(object):
         # Generate ssh key if needed
         home_dir = os.environ['HOME']
         ssh_key_file = "{}/.ssh/id_rsa".format(home_dir)
-        print("key file - {}".format(ssh_key_file))
+
         if not os.path.exists(ssh_key_file):
             self.run_command("mkdir -p {}/.ssh".format(home_dir))
+
             cmd = ('ssh-keygen -f {} -t rsa -N \'\''.format(ssh_key_file))
-            self.run_command(cmd)
+            if not self.run_command(cmd):
+                return False
 
         # Create vm
         logging.debug("Creating VM")
