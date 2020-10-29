@@ -179,7 +179,6 @@ class UVTKVMTest(object):
                                 .format(self.name)):
             return False
 
-        self.cleanup()
         return True
 
 
@@ -198,8 +197,14 @@ def test_uvtkvm(args):
     uvt_test = UVTKVMTest(image)
     uvt_test.get_image_or_source()
     result = uvt_test.start()
+    uvt_test.cleanup()
 
-    sys.exit(result)
+    if result:
+        print("PASS: VM was succssfully started and checked")
+        sys.exit(0)
+    else:
+        print("FAIL: VM was not started and/or checked")
+        sys.exit(1)
 
 
 def main(args):
