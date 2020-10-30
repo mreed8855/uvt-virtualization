@@ -32,6 +32,7 @@ import sys
 import tempfile
 import tarfile
 import time
+import apt
 import urllib.request
 from urllib.parse import urlparse
 from uuid import uuid4
@@ -91,6 +92,20 @@ class UVTKVMTest(object):
             else:
                 logging.debug(' Command returned no output')
             return True
+
+    def check_package(self, pkg_name):
+        cache = apt.Cache()
+
+        pkg = cache[pkg_name]
+        if pkg.is_installed:
+            print ("{} already installed".format(pkg_name))
+        else:
+            pkg.mark_install()
+
+        try:
+            cache.commit()
+        except Exception:
+            print ("Install of {} failed".format(sys.stderr)))
 
     def get_image_or_source(self):
         """
@@ -195,6 +210,7 @@ def test_uvtkvm(args):
         image = args.image
 
     uvt_test = UVTKVMTest(image)
+    uvt_test.check_package("uvtool")
     uvt_test.get_image_or_source()
     result = uvt_test.start()
     uvt_test.cleanup()
