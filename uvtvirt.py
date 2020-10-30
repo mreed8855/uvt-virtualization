@@ -98,14 +98,14 @@ class UVTKVMTest(object):
 
         pkg = cache[pkg_name]
         if pkg.is_installed:
-            print ("{} already installed".format(pkg_name))
+            print("{} already installed".format(pkg_name))
         else:
             pkg.mark_install()
 
         try:
             cache.commit()
         except Exception:
-            print ("Install of {} failed".format(sys.stderr)))
+            print("Install of {} failed".format(sys.stderr))
 
     def get_image_or_source(self):
         """
@@ -168,7 +168,7 @@ class UVTKVMTest(object):
 
         # Create vm
         logging.debug("Creating VM")
-        cmd = ('uvt-kvm create {}'.format(self.name))
+        cmd = ('uvt-kvm create release={} {}'.format(self.release, self.name))
 
         if self.image.find(".img") > 0:
             cmd = cmd + " --backing-image-file {} ".format(self.image)
@@ -211,6 +211,7 @@ def test_uvtkvm(args):
 
     uvt_test = UVTKVMTest(image)
     uvt_test.check_package("uvtool")
+    uvt_test.check_package("uvtool-libvirt")
     uvt_test.get_image_or_source()
     result = uvt_test.start()
     uvt_test.cleanup()
